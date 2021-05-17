@@ -307,17 +307,39 @@ equilibrium_init_create <- function(age_vector, het_brackets,
   admin_matches <- admin_match(admin_unit = admin_unit, country = country,
                           admin_units_seasonal = admin_units_seasonal)
 
-  if(admin_matches == 0){
-    ssa0 <- ssa1 <- ssa2 <- ssa3 <- ssb1 <- ssb2 <- ssb3 <- theta_c <- 0
-  } else {
-    ssa0 <- admin_units_seasonal$a0[admin_matches]
-    ssa1 <- admin_units_seasonal$a1[admin_matches]
-    ssa2 <- admin_units_seasonal$a2[admin_matches]
-    ssa3 <- admin_units_seasonal$a3[admin_matches]
-    ssb1 <- admin_units_seasonal$b1[admin_matches]
-    ssb2 <- admin_units_seasonal$b2[admin_matches]
-    ssb3 <- admin_units_seasonal$b3[admin_matches]
-    theta_c <- admin_units_seasonal$theta_c[admin_matches]
+  ss_set <- !any(vlapply(
+    mpl[c('ssa0', 'ssa1', 'ssa2', 'ssa3', 'ssb1', 'ssb2', 'ssb3')],
+    is.null
+  ))
+
+  if (ss_set && is.null(mpl$theta_c)) {
+    mpl$theta_c <- mean(vnapply(
+      seq(565),
+      function(t) {
+        sum(
+          mpl$ssa0,
+          mpl$ssa1 * cos(2*pi*t/365),
+          mpl$ssa2 * cos(2*2*pi*t/365),
+          mpl$ssa3 * cos(3*2*pi*t/365),
+          mpl$ssb1 * sin(2*pi*t/365),
+          mpl$ssb2 * sin(2*2*pi*t/365),
+          mpl$ssb3 * sin(3*2*pi*t/365)
+        )
+      }
+    ))
+  } else if (!ss_set) {
+    if (admin_matches == 0){
+      mpl$ssa0 <- mpl$ssa1 <- mpl$ssa2 <- mpl$ssa3 <- mpl$ssb1 <- mpl$ssb2 <- mpl$ssb3 <- mpl$theta_c <- 0
+    } else {
+      mpl$ssa0 <- admin_units_seasonal$a0[admin_matches]
+      mpl$ssa1 <- admin_units_seasonal$a1[admin_matches]
+      mpl$ssa2 <- admin_units_seasonal$a2[admin_matches]
+      mpl$ssa3 <- admin_units_seasonal$a3[admin_matches]
+      mpl$ssb1 <- admin_units_seasonal$b1[admin_matches]
+      mpl$ssb2 <- admin_units_seasonal$b2[admin_matches]
+      mpl$ssb3 <- admin_units_seasonal$b3[admin_matches]
+      mpl$theta_c <- admin_units_seasonal$theta_c[admin_matches]
+    }
   }
 
   # better het bounds for equilbirum initialisation in individual model
@@ -344,9 +366,8 @@ equilibrium_init_create <- function(age_vector, het_brackets,
               omega = omega, foi_age = foi_age, rel_foi = rel_foi,
               K0 = K0, mv0 = mv0, na = na, nh = nh, ni = num_int, x_I = x_I,
               FOI = FOI_eq, EIR_eq = EIR_eq, cA_eq = cA_eq,
-              den = den, age59 = age59, age05 = age05, ssa0 = ssa0, ssa1 = ssa1,
-              ssa2 = ssa2, ssa3 = ssa3, ssb1 = ssb1, ssb2 = ssb2, ssb3 = ssb3,
-              theta_c = theta_c, age = age_vector*mpl$DY, ft = ft, FOIv_eq = FOIv_eq,
+              den = den, age59 = age59, age05 = age05,
+              age = age_vector*mpl$DY, ft = ft, FOIv_eq = FOIv_eq,
               betaS = betaS, betaA = betaA, betaU = betaU, FOIvij_eq=FOIvij_eq,
               age_mid_point = age_mid_point, het_bounds = het_bounds, pi = pi,
               age20l = age20l, age20u = age20u, age_20_factor = age_20_factor)

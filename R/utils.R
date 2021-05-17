@@ -202,3 +202,6 @@ admin_match <- function(admin_unit = NULL, country = NULL,
 
   return(admin_matches)
 }
+
+vlapply <- function(X, FUN, ...) vapply(X, FUN, logical(1), ...)
+vnapply <- function(X, FUN, ...) vapply(X, FUN, numeric(1), ...)
