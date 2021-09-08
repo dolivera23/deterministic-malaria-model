@@ -53,7 +53,7 @@ run_model_metapop <- function(model = "odin_model_metapop",
   state_use <- state[names(state) %in% coef(generator)$name]
 
   # create model with initial values
-  mod <- generator(user = state_use, use_dde = TRUE)
+  mod <- generator$new(user = state_use, use_dde = TRUE)
   tt <- seq(0, time, 1)
 
   # run model

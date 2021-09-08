@@ -102,7 +102,7 @@ mixing <- matrix(1,nrow=1)
 
 out_metapop <- run_model_metapop(init_EIR = 50,
                                  age =init_age,
-                                 time = 10000,
+                                 time = 500,
                                  ITN_IRS_on = 365,
                                  itn_cov = 0.75,
                                  num_int = 2,
