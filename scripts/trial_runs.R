@@ -73,7 +73,7 @@ lines(Ssum$X3, col = "blue")
 # ITN only
 out <- run_model(init_EIR = 50,
                  age =init_age,
-                 time = 10000,
+                 time = 1000,
                  ITN_IRS_on = 365,
                  itn_cov=0.75,
                  num_int = 2)
@@ -85,8 +85,8 @@ out2 <- run_model(init_EIR = 50,
                   age =init_age,
                   time = 1000,
                   ITN_IRS_on = 365,
-                  itn_cov = 1,
-                  irs_cov = 1,
+                  itn_cov = 0.75,
+                  irs_cov = 0.4,
                   num_int = 4)
 
 
@@ -102,7 +102,7 @@ mixing <- matrix(1,nrow=1)
 
 out_metapop <- run_model_metapop(init_EIR = 50,
                                  age =init_age,
-                                 time = 500,
+                                 time = 1000,
                                  ITN_IRS_on = 365,
                                  itn_cov = 0.75,
                                  num_int = 2,
@@ -181,6 +181,8 @@ plot(Ssum2$t,Ssum2$X1, type='l', ylim = c(0, 1))
 lines(Ssum2$X1, col = "blue")
 lines(Ssum2$X2, col = "yellow")
 lines(Ssum2$X3, col = "black")
+
+
 
 
 

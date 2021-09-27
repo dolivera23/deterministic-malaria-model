@@ -195,7 +195,6 @@ b1 <- user() # prob of infection from bite with zero immunity
 kB <- user() #
 IB0 <- user()
 dim(b) <- c(na,nh,num_int,np)
-b[1:na, 1:nh, 1:num_int,1:np] <- b0 * ((1-b1)/(1+(IB[i,j,k,l]/IB0)^kB)+b1)
 
 # detection immunity
 init_ID[,,,] <- user()
