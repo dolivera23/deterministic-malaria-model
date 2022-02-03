@@ -31,41 +31,41 @@ run_model_metapop <- function(model = "odin_model_metapop",
                               admin2 = NULL,
                               time = 100,
                               ...){
-
+  
   np<- length(init_EIR)
-
+  
   ## create model param list using necessary variables
   xx <- model_param_list_create_metapop (np = np,...)
-
+  
   # generate initial state variables from equilibrium solution
-
+  
   state <- equilibrium_init_multi(age_vector=age, EIR_vector=init_EIR,ft=init_ft,
-                                   model_param_list =xx, het_brackets=het_brackets,
-                                   country = country,
-                                   admin_unit = admin2)
+                                  model_param_list =xx, het_brackets=het_brackets,
+                                  country = country,
+                                  admin_unit = admin2)
   # create odin generator
   generator <- switch(model,
                       "odin_model_metapop" = odin_model_metapop,
                       stop(sprintf("Unknown model '%s'", model)))
-
+  
   # There are many parameters used that should not be passed through
   # to the model.
   state_use <- state[names(state) %in% coef(generator)$name]
-
+  
   # create model with initial values
   mod <- generator$new(user = state_use, use_dde = TRUE)
   tt <- seq(0, time, 1)
-
+  
   # run model
   callback <- function(t, h, y) {
     message(sprintf("t: %f, y:[%s], y: [%s] \n", t, y, any(y<0),
                     paste(format(y, 5), collapse = " -- ")))
   }
   mod_run <- mod$run(tt, verbose= TRUE,step_size_max=9)
-
+  
   # shape output
   out <- mod$transform_variables(mod_run)
-
+  
   # return mod
   return(out)
 }

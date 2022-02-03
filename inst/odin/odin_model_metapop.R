@@ -195,6 +195,7 @@ b1 <- user() # prob of infection from bite with zero immunity
 kB <- user() #
 IB0 <- user()
 dim(b) <- c(na,nh,num_int,np)
+b[1:na, 1:nh, 1:num_int,1:np] <- b0 * ((1-b1)/(1+(IB[i,j,k,l]/IB0)^kB)+b1)
 
 # detection immunity
 init_ID[,,,] <- user()
@@ -590,10 +591,6 @@ age59 <- user(integer=TRUE)
 # index of the age vector above 5 years
 age05 <- user(integer=TRUE)
 
-dim(prev0to59) <- c(age59,nh,num_int,np)
-prev0to59[1:age59,,,] <- T[i,j,k,l] + D[i,j,k,l]  + A[i,j,k,l]*p_det[i,j,k,l]
-output(prev[]) <- sum(prev0to59[,,,i])/sum(den[1:age59])
-dim(prev) <-np
 
 # slide positivity in 0 -5 year age bracket
 dim(clin_inc0to5) <- c(age05,nh,num_int,np)
@@ -601,6 +598,22 @@ clin_inc0to5[1:age05,,,] <- clin_inc[i,j,k,l]
 output(inc05[]) <- sum(clin_inc0to5[,,,i])/sum(den[1:age05])
 dim(inc05) <- np
 output(inc) <- sum(clin_inc[,,,])
+
+
+dim(prev0to59) <- c(age59,nh,num_int,np)
+prev0to59[1:age59,,,] <- T[i,j,k,l] + D[i,j,k,l]  + A[i,j,k,l]*p_det[i,j,k,l]
+output(prev[]) <- sum(prev0to59[,,,i])/sum(den[1:age59])
+dim(prev) <-np
+
+
+dim(total_prev) <- c(na,nh,num_int,np)
+total_prev[,,,] <- T[i,j,k,l] + D[i,j,k,l]  + A[i,j,k,l]*p_det[i,j,k,l]
+dim(prev_out) <- c(na,np)
+output(prev_out[,]) <- sum(total_prev[i,,,j])
+
+
+dim(clinic_inc_ages) <- c(na,np)
+clinic_inc_ages[,] <- sum(clin_inc[i,,,j])
 
 # Param checking outputs
 output(mu[]) <- mu
@@ -617,3 +630,7 @@ output(r_IRS) <- r_IRS
 output(s_IRS) <- s_IRS
 output(cov[,]) <- cov
 output(K0[]) <- K0
+output(clinic_inc_ages[,])<- clinic_inc_ages
+output(den[]) <- den 
+output(age05) <- age05
+output(age59) <- age59
